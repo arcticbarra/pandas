@@ -191,6 +191,8 @@ class PandasDelegate(PandasObject):
            overwrite the method/property in the target class if it exists
         """
 
+        validate_bool_kwarg(overwrite, 'overwrite')
+
         def _create_delegator_property(name):
 
             def _getter(self):
@@ -933,6 +935,11 @@ class IndexOpsMixin(object):
         -------
         counts : Series
         """
+        validate_bool_kwarg(normalize, 'normalize')
+        validate_bool_kwarg(sort, 'sort')
+        validate_bool_kwarg(ascending, 'ascending')
+        validate_bool_kwarg(dropna, 'dropna')
+
         from pandas.core.algorithms import value_counts
         result = value_counts(self, sort=sort, ascending=ascending,
                               normalize=normalize, bins=bins, dropna=dropna)
@@ -988,6 +995,8 @@ class IndexOpsMixin(object):
         -------
         nunique : int
         """
+        validate_bool_kwarg(dropna, 'dropna')
+
         uniqs = self.unique()
         n = len(uniqs)
         if dropna and isnull(uniqs).any():
@@ -1085,6 +1094,8 @@ class IndexOpsMixin(object):
         labels : the indexer to the original array
         uniques : the unique Index
         """
+        validate_bool_kwarg(sort, 'sort')
+
         from pandas.core.algorithms import factorize
         return factorize(self, sort=sort, na_sentinel=na_sentinel)
 
