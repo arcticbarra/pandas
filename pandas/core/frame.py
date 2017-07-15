@@ -2521,6 +2521,7 @@ it is assumed to be aliases for the column names')
         value : int, Series, or array-like
         allow_duplicates : bool, optional
         """
+        validate_bool_kwarg(allow_duplicates, 'allow_duplicates')
         self._ensure_valid_index(value)
         value = self._sanitize_column(column, value, broadcast=False)
         self._data.insert(loc, column, value,
@@ -2625,6 +2626,7 @@ it is assumed to be aliases for the column names')
         -------
         sanitized_column : numpy-array
         """
+        validate_bool_kwarg(broadcast, 'broadcast')
 
         def reindexer(value):
             # reindex if necessary
@@ -2927,6 +2929,9 @@ it is assumed to be aliases for the column names')
         -------
         dataframe : DataFrame
         """
+        validate_bool_kwarg(drop, 'drop')
+        validate_bool_kwarg(append, 'append')
+        validate_bool_kwarg(verify_integrity, 'verify_integrity')
         inplace = validate_bool_kwarg(inplace, 'inplace')
         if not isinstance(keys, list):
             keys = [keys]
@@ -3020,6 +3025,7 @@ it is assumed to be aliases for the column names')
         -------
         resetted : DataFrame
         """
+        validate_bool_kwarg(drop, 'drop')
         inplace = validate_bool_kwarg(inplace, 'inplace')
         if inplace:
             new_obj = self
@@ -3735,6 +3741,7 @@ it is assumed to be aliases for the column names')
         -------
         result : DataFrame
         """
+        validate_bool_kwarg(overwrite, 'overwrite')
 
         other_idxlen = len(other.index)  # save for compare
 
@@ -3869,6 +3876,9 @@ it is assumed to be aliases for the column names')
             If True, will raise an error if the DataFrame and other both
             contain data in the same place.
         """
+        validate_bool_kwarg(overwrite, 'overwrite')
+        validate_bool_kwarg(raise_conflict, 'raise_conflict')
+
         # TODO: Support other joins
         if join != 'left':  # pragma: no cover
             raise NotImplementedError("Only left join is supported")
@@ -4025,6 +4035,8 @@ it is assumed to be aliases for the column names')
         stacked : DataFrame or Series
         """
         from pandas.core.reshape.reshape import stack, stack_multiple
+
+        validate_bool_kwarg(dropna, 'dropna')
 
         if isinstance(level, (tuple, list)):
             return stack_multiple(self, level, dropna=dropna)
@@ -4357,6 +4369,11 @@ it is assumed to be aliases for the column names')
         -------
         applied : Series or DataFrame
         """
+
+        validate_bool_kwarg(broadcast, 'broadcast')
+        validate_bool_kwarg(raw, 'raw')
+        validate_bool_kwarg(reduce, 'reduce')
+
         axis = self._get_axis_number(axis)
         ignore_failures = kwds.pop('ignore_failures', False)
 
@@ -4649,6 +4666,10 @@ it is assumed to be aliases for the column names')
         3  7  8
 
         """
+
+        validate_bool_kwarg(ignore_index, 'ignore_index')
+        validate_bool_kwarg(verify_integrity, 'verify_integrity')
+
         if isinstance(other, (Series, dict)):
             if isinstance(other, dict):
                 other = Series(other)
@@ -4803,6 +4824,9 @@ it is assumed to be aliases for the column names')
         -------
         joined : DataFrame
         """
+
+        validate_bool_kwarg(sort, 'sort')
+
         # For SparseDataFrame's benefit
         return self._join_compat(other, on=on, how=how, lsuffix=lsuffix,
                                  rsuffix=rsuffix, sort=sort)
@@ -5064,6 +5088,8 @@ it is assumed to be aliases for the column names')
         -------
         correls : Series
         """
+        validate_bool_kwarg(drop, 'drop')
+
         axis = self._get_axis_number(axis)
         if isinstance(other, Series):
             return self.apply(other.corr, axis=axis)
@@ -5119,6 +5145,8 @@ it is assumed to be aliases for the column names')
         -------
         count : Series (or DataFrame if level specified)
         """
+        validate_bool_kwarg(numeric_only, 'numeric_only')
+
         axis = self._get_axis_number(axis)
         if level is not None:
             return self._count_level(level, axis=axis,
@@ -5292,6 +5320,8 @@ it is assumed to be aliases for the column names')
         1    2
         2    2
         """
+        validate_bool_kwarg(dropna, 'dropna')
+
         return self.apply(Series.nunique, axis=axis, dropna=dropna)
 
     def idxmin(self, axis=0, skipna=True):
@@ -5319,6 +5349,8 @@ it is assumed to be aliases for the column names')
         --------
         Series.idxmin
         """
+        validate_bool_kwarg(skipna, 'skipna')
+
         axis = self._get_axis_number(axis)
         indices = nanops.nanargmin(self.values, axis=axis, skipna=skipna)
         index = self._get_axis(axis)
@@ -5350,6 +5382,8 @@ it is assumed to be aliases for the column names')
         --------
         Series.idxmax
         """
+        validate_bool_kwarg(skipna, 'skipna')
+
         axis = self._get_axis_number(axis)
         indices = nanops.nanargmax(self.values, axis=axis, skipna=skipna)
         index = self._get_axis(axis)
@@ -5396,6 +5430,8 @@ it is assumed to be aliases for the column names')
         0  1
         1  2
         """
+        validate_bool_kwarg(numeric_only, 'numeric_only')
+
         data = self if not numeric_only else self._get_numeric_data()
 
         def f(s):
@@ -5496,6 +5532,8 @@ it is assumed to be aliases for the column names')
         -------
         df : DataFrame with DatetimeIndex
         """
+        validate_bool_kwarg(copy, 'copy')
+
         new_data = self._data
         if copy:
             new_data = new_data.copy()
@@ -5527,6 +5565,8 @@ it is assumed to be aliases for the column names')
         -------
         ts : TimeSeries with PeriodIndex
         """
+        validate_bool_kwarg(copy, 'copy')
+
         new_data = self._data
         if copy:
             new_data = new_data.copy()
