@@ -249,7 +249,7 @@ class Categorical(PandasObject):
     _typ = 'categorical'
 
     def __init__(self, values, categories=None, ordered=False, fastpath=False):
-
+        validate_bool_kwarg(ordered, 'ordered')
         self._validate_ordered(ordered)
 
         if fastpath:
@@ -471,6 +471,7 @@ class Categorical(PandasObject):
             categorical. If not given, the resulting categorical will be
             unordered.
         """
+        validate_bool_kwarg(ordered, 'ordered')
         try:
             codes = np.asarray(codes, np.int64)
         except:
@@ -552,6 +553,7 @@ class Categorical(PandasObject):
            Don't perform validation of the categories for uniqueness or nulls
 
         """
+        validate_bool_kwarg(fastpath, 'fastpath')
         if not isinstance(categories, ABCIndexClass):
             dtype = None
             if not hasattr(categories, "dtype"):
@@ -592,7 +594,7 @@ class Categorical(PandasObject):
            Don't perform validation of the categories for uniqueness or nulls
 
         """
-
+        validate_bool_kwarg(fastpath, 'fastpath')
         categories = self._validate_categories(categories, fastpath=fastpath)
         if (not fastpath and self._categories is not None and
                 len(categories) != len(self._categories)):
@@ -632,6 +634,7 @@ class Categorical(PandasObject):
             original order is preserved), followed by any unrepresented
             categories in the original order.
         """
+        validate_bool_kwarg(sort, 'sort')
 
         # Already sorted according to self.categories; all is fine
         if sort:
@@ -664,6 +667,7 @@ class Categorical(PandasObject):
            of this categorical with ordered set to the value
         """
         inplace = validate_bool_kwarg(inplace, 'inplace')
+        validate_bool_kwarg(value, 'value')
         self._validate_ordered(value)
         cat = self if inplace else self.copy()
         cat._ordered = value
@@ -754,6 +758,8 @@ class Categorical(PandasObject):
         remove_unused_categories
         """
         inplace = validate_bool_kwarg(inplace, 'inplace')
+        validate_bool_kwarg(ordered, 'ordered')
+        validate_bool_kwarg(rename, 'rename')
         new_categories = self._validate_categories(new_categories)
         cat = self if inplace else self.copy()
         if rename:
@@ -848,6 +854,7 @@ class Categorical(PandasObject):
         set_categories
         """
         inplace = validate_bool_kwarg(inplace, 'inplace')
+        validate_bool_kwarg(ordered, 'ordered')
         if set(self._categories) != set(new_categories):
             raise ValueError("items in new_categories are not the same as in "
                              "old categories")
@@ -1242,6 +1249,8 @@ class Categorical(PandasObject):
         Series.value_counts
 
         """
+        validate_bool_kwarg(dropna, 'dropna')
+
         from numpy import bincount
         from pandas.core.dtypes.missing import isnull
         from pandas.core.series import Series
@@ -1388,6 +1397,8 @@ class Categorical(PandasObject):
         Categories (2, int64): [2, 5]
         """
         inplace = validate_bool_kwarg(inplace, 'inplace')
+        validate_bool_kwarg(ascending, 'ascending')
+
         if na_position not in ['last', 'first']:
             raise ValueError('invalid na_position: {!r}'.format(na_position))
 
